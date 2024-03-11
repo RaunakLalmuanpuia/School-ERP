@@ -47,6 +47,17 @@
                     :href="route('dashboard')"
                     label="Dashboard"
                 />
+                <q-route-tab
+                     
+                     :href="route('roles')"
+                     label="Roles"
+                 />
+                 <!-- v-if="$page.props.user.roles.includes('admin')" -->
+                 <q-route-tab
+                     
+                     :href="route('usersRole')"
+                     label="Users"
+                 />
             </q-tabs>
         </q-header>
 
@@ -79,7 +90,8 @@
                     <q-item-section>Class</q-item-section>
                 </q-item>
                 </Link>
-                <Link href="/">
+                
+                <Link :href="route('subject.index')">
                     <q-item
                         clickable
                         v-ripple
@@ -93,7 +105,7 @@
                     </q-item>
                 </Link>
                 <q-separator spaced />
-                <Link href="/">
+                <Link :href="route('student.index')">
                     <q-item
                         clickable
                         v-ripple
@@ -106,7 +118,7 @@
                         <q-item-section>Student</q-item-section>
                     </q-item>
                 </Link>
-                <Link href="/">
+                <Link :href="route('teacher.index')">
                     <q-item
                         clickable
                         v-ripple

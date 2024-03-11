@@ -11,7 +11,7 @@
         <main class="container w-full p-4 mx-auto">
             <div class="flex mb-4">
             <!-- create a dialog -->
-            <q-btn label="Create Class" color="primary" @click="creatPrompt()" />
+            <q-btn label="Create Subject" color="primary" @click="creatPrompt()" />
         </div>
             <div
                 class="p-4 border border-gray-200 rounded-md shadow-sm dark:border-gray-800 dark:text-gray-300"
@@ -20,20 +20,23 @@
                     class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
                 >
                     <div
-                        v-for="classe in classes.data"
-                        :key="classe.id"
+                        v-for="subject in subjects.data"
+                        :key="subject.id"
                     >
                         <div class="p-4 mb-4 border border-gray-300 rounded-md">
                             <Link
-                                v-if="classe.id"
-                                :href="route('class.show', classe.id)"
+                                v-if="subject.id"
+                                :href="route('subject.show', subject.id)"
                             >
                                 <div class="flex flex-col items-start gap-2">
                                     <span class="font-bold">{{
-                                        classe.name
+                                        subject.name
                                     }}</span>
-                                    <span>{{ classe.description }}</span>
-                                    <span>{{ classe.acadamic_year }}</span>
+                                    <span>{{ subject.subject_code}}</span>
+                                    <span>{{ subject.class.description }}</span>
+                                    <span>{{ subject.teacher.user.name }}</span>
+                                    <span>{{ subject.teacher.user.email }}</span>
+                                    
                                     <!-- <span class="font-bold">{{
                                         classe.employer_status
                                     }}</span>
@@ -48,7 +51,7 @@
             <div class="flex justify-center mt-4">
                 <div class="flex gap-1">
                     <Link
-                        v-for="(link, index) in classes.links"
+                        v-for="(link, index) in subjects.links"
                         :key="index"
                         class="px-4 py-2 rounded-md"
                         :href="link.url || ''"
@@ -65,14 +68,42 @@
          <q-dialog v-model="prompt" persistent>
             <q-card style="min-width: 350px">
                 <q-card-section>
-                <div class="text-h6">Create Class</div>
+                <div class="text-h6">Create subjects</div>
                 </q-card-section>
-                <q-input v-model="form.name" label="Class Name" />
+                <q-input v-model="form.name" label="Subjet Name" />
                 <div v-if="form.errors.name">{{ form.errors.name }}</div>
-                <q-input v-model="form.description" label="Class Description" />
-                <div v-if="form.errors.description">{{ form.errors.description }}</div>
-                <q-date  v-model="form.acadamic_year" label="Acadamic Year" />
-                <div v-if="form.errors.acadamic_year">{{ form.errors.acadamic_year }}</div>
+
+                <q-input v-model="form.subject_code" label="Subject code" />
+                <div v-if="form.errors.subject_code">{{ form.errors.subject_code }}</div>
+
+                <!-- <q-date  v-model="form.acadamic_year" label="Acadamic Year" />
+                <div v-if="form.errors.acadamic_year">{{ form.errors.acadamic_year }}</div> -->
+                
+                <!-- <q-select
+        v-model="form.teacher_id"
+        label="Teacher"
+        outlined
+        dense
+        :options="teacherOptions"
+      /> -->
+           
+                
+      <q-select
+        v-model="form.teacher_id"
+        label="Teacher"
+        outlined
+        dense
+        :options="teacherOptions"
+      />
+
+      <q-select
+        v-model="form.class_id"
+        label="Class"
+        outlined
+        dense
+        :options="classesOptions"
+      />
+      
                 <q-card-actions align="right" class="text-primary">
                 <q-btn flat label="Cancel" v-close-popup />
                 <q-btn flat label="Confirm" v-close-popup  @click="onSubmit()"/>
@@ -91,19 +122,37 @@ const $q = useQuasar();
 const prompt = ref(false);
 
 const props = defineProps({
-    classes: Object,
+    subjects: Object,
+    teacher: Object,
+    classes:Object,
 });
+
 const form = useForm({
-    name : "",
-    description: "",
+    class_id : "",
+    teacher_id: "",
+    name: '',
+    subject_code: '',
     acadamic_year: '',
 })
+
 const creatPrompt = () => {
     prompt.value = true;
 };
+// Map teacher objects to dropdown options
+const teacherOptions = props.teacher.map(teacher => ({
+  label: teacher.user.name, // Assuming 'name' attribute in the 'user' relationship
+  value: teacher.id,
+}));
+
+// Map teacher objects to dropdown options
+const classesOptions = props.classes.map(classes => ({
+  label: classes.description, 
+  value: classes.id,
+}));
+
 
 const onSubmit = () => {
-        form.post(route("class.store"));
+        form.post(route("subject.store"));
         $q.notify({
             message: "Class succesfully Created",
             color: "purple",
@@ -113,4 +162,5 @@ const onSubmit = () => {
         form.name = "";
    
 };
+
 </script>

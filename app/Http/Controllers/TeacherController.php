@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
-
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Hash;
 class TeacherController extends Controller
 {
     /**
@@ -12,7 +14,11 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        //
+        $teacher = Teacher::with(['user','subjects'])->paginate();
+        return Inertia::render('Teacher/Index',[
+            'teacher' => $teacher,
+        ]);
+        
     }
 
     /**
@@ -29,6 +35,58 @@ class TeacherController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request);
+        $vaidated_data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|string|min:8',
+            'employee_no' => 'nullable|string|max:255',
+            'father_name' => 'nullable|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'gender' => 'nullable|in:male,female',
+            'date_of_birth' => 'nullable|date',
+            'date_of_join' => 'nullable|date',
+            'address' => 'nullable|string|max:255',
+            'phone_no' => 'nullable|string|max:255',
+            'qualification' => 'nullable|string|max:255',
+            'salary' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Assuming max file size is 2MB
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $photo = $request->file('photo');
+            $filepath_photo = $photo->store('public/Teacher');
+            $filepath_photo = str_replace('public/', '', $filepath_photo); // Remove 'public/' from the path
+           
+        }
+        // first create a user
+        $user = new User([
+            'name' => $vaidated_data['name'],
+            'email' => $vaidated_data['email'],
+            'password' =>Hash::make($vaidated_data['password']),
+            
+        ]);
+        $user->save();
+        $user->syncRoles('teacher');
+        //get the new created user
+        $userId = User::where('email', $vaidated_data['email'])->first();
+        // add the teacher details in teacher table
+        $teacher = new Teacher([
+            'user_id' => $userId->id,
+            'employee_no' => $vaidated_data['employee_no'],
+            'father_name' => $vaidated_data['father_name'],
+            'mother_name' => $vaidated_data['mother_name'],
+            'gender' => $vaidated_data['gender'],
+            'date_of_birth' => $vaidated_data['date_of_birth'],
+            'date_of_join' => $vaidated_data['date_of_join'],
+            'address' => $vaidated_data['address'],
+            'phone_no' =>$vaidated_data['phone_no'],
+            'qualification' => $vaidated_data['qualification'],
+            'salary' => $vaidated_data['salary'],
+            'photo' => $filepath_photo,
+        ]);
+        $teacher->save();
+        return redirect()->route('teacher.index')->with('message', 'Teacher Added Successfully!');
     }
 
     /**

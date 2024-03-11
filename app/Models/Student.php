@@ -17,11 +17,10 @@ class Student extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function class(): BelongsTo
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
-    
 }

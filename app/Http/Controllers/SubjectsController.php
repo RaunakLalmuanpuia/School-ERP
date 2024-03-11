@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Classes;
 use App\Models\Subjects;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
-
+use Inertia\Inertia;
 class SubjectsController extends Controller
 {
     /**
@@ -12,7 +14,17 @@ class SubjectsController extends Controller
      */
     public function index()
     {
-        //
+         // $classes = Classes::with(['students', 'subjects'])->paginate();
+         $subjects = Subjects::with(['class', 'teacher.user'])->paginate();
+         $classes = Classes::all();
+         $teacher = Teacher::with(['user'])->get();
+         // Load the class and teacher associated with the subject
+        // $subject = Subjects::load(['class', 'teacher']);
+         return Inertia::render('Subjects/Index',[
+             'subjects' => $subjects,
+             'classes' => $classes,
+             'teacher' => $teacher
+         ]);
     }
 
     /**
@@ -28,7 +40,21 @@ class SubjectsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
+        // dd($request->class_id['value']);
+
+        $class = Classes::where('id', $request->class_id['value'])->first();
+        $teacher = Teacher::where('id', $request->teacher_id['value'])->first();
+        $subject = new Subjects([
+            'class_id' => $class->id,
+            'teacher_id' => $teacher->id,
+            'name' => $request->name,
+            'subject_code' => $request->subject_code,
+            'acadamic_year' =>$request->acadamic_year
+            
+        ]);
+        $subject->save();
+        return redirect()->route('subject.index')->with('message', 'Subject Added Successfully!');
     }
 
     /**

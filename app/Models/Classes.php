@@ -14,11 +14,12 @@ class Classes extends Model
     // Empty means all modules are mass assingnable
     protected $guarded = [];
 
-    public function student(){
-        return $this->hasMany(Student::class);
+    public function students(){
+        return $this->hasMany(Student::class, 'user_id');
     }
+
     public function subjects(){
-        return $this->hasMany(Subjects::class);
+        return $this->hasMany(Subjects::class, 'class_id');
     }
 
 }

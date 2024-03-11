@@ -12,7 +12,12 @@ class ClassesController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Class/Index');
+
+        $classes = Classes::with(['students', 'subjects'])->paginate();
+        // $classes = Classes::paginate(); 
+        return Inertia::render('Class/Index',[
+            'classes' => $classes,
+        ]);
     }
 
     /**
@@ -28,7 +33,15 @@ class ClassesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        Classes :: create(
+            $request->validate([
+                'name' => 'required|integer|min:1|max:12',
+                'description' => 'required',
+                'acadamic_year' => 'required'
+            ])
+        );
+        return redirect()->route('class.index')->with('success', 'Class Sucessfully Added');
     }
 
     /**

@@ -1,5 +1,6 @@
 <template>
     <QuasarLayout>
+        <Head title="Class" />
         <div
             v-if="$page.props.flash.message"
             class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
@@ -84,7 +85,7 @@
 
 <script setup>
 import QuasarLayout from "@/Layouts/QuasarLayout.vue";
-import {useForm, router, Link} from "@inertiajs/vue3";
+import {useForm, router, Link, Head} from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import {ref} from 'vue';
 const $q = useQuasar();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Classes;
 use App\Models\Student;
+use App\Models\Subjects;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +38,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
+        // dd($request);s
         
         $vaidated_data = $request->validate([
             'name' => 'required|string|max:255',
@@ -95,7 +96,20 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        //
+    
+        // dd($student);
+        
+        $student->load('class', 'user'); // load the relation of student
+        // $user_detail = User::where('id', $student->user_id)->first();
+        // $student_class = Classes::where('id', $student->class_id)->first();
+        $student_subjects = Subjects::where('class_id', $student->class_id)->with('teacher.user')->get(); //get teacher of subject also along with the relation of the teacher with user
+        // dd($student_subjects[0]->teacher->user->name); // teacher name;
+        // dd($student_detail->class->name);
+        return Inertia::render('Student/Show',[
+            'student_detail' => $student,
+            'student_subjects' => $student_subjects
+        ]);
+
     }
 
     /**

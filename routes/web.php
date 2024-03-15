@@ -62,3 +62,4 @@ Route::delete('role/{role}', [RoleController::class, 'destroyRole'])->name('dest
 Route::get('usersRole', [RoleController::class, 'users'])->name('usersRole');
 Route::post('users/{users}', [RoleController::class, 'updateUserRole'])->name('updateUserRole');//Assign user role
 
+Route::get('routine', [ClassesController::class, 'generate'])->name('routine');

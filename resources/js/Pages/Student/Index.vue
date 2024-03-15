@@ -1,6 +1,6 @@
 <template>
     <QuasarLayout>
-        
+        <Head title="Student" />
         <div
             v-if="$page.props.flash.message"
             class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
@@ -27,7 +27,7 @@
                         <div class="p-4 mb-4 border border-gray-300 rounded-md">
                             <Link
                                 v-if="student.id"
-                                :href="route('teacher.show', student.id)"
+                                :href="route('student.show', student.id)"
                             >
                                 <div class="flex flex-col items-start gap-2">
                                     <img class="h-20 w-20 rounded-full object-cover" :src="'/storage/' + student.photo" :alt="$page.props.auth.user.name">
@@ -72,7 +72,7 @@
         </main>
          <!-- Create Dialog -->
          <q-dialog v-model="prompt" persistent>
-            <q-card style="min-width: 350px">
+            <q-card style="min-width: 500px">
                 <q-card-section>
                 <div class="text-h6">Add Student</div>
                 </q-card-section>
@@ -126,20 +126,20 @@
             dense
             clearable
           />
-          <q-date
+          <!-- <q-date
             v-model="formData.date_of_birth"
             label="Date of Birth"
             outlined
             dense
             clearable
-          />
-          <q-date
-            v-model="formData.acadamic_year"
-            label="Acadamic Year"
-            outlined
-            dense
-            clearable
-          />
+          /> -->
+          <label class="block text-gray-700 text-sm font-bold mb-2">Date of Birth</label>
+          <input
+          type="date"
+          v-model="formData.date_of_birth"
+          class="shadow appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+         
+          
           <q-input
             v-model="formData.address"
             label="Address"
@@ -161,6 +161,12 @@
         dense
         :options="classesOptions"
       />
+         <label class="block text-gray-700 text-sm font-bold mb-2">Academic Year</label>
+          <input
+          type="date"
+          v-model="formData.academic_year"
+          class="shadow appearance-none border border-gray-300 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
           <q-file
             v-model="formData.photo"
             label="Photo"
@@ -180,7 +186,7 @@
 
 <script setup>
 import QuasarLayout from "@/Layouts/QuasarLayout.vue";
-import {useForm, router, Link} from "@inertiajs/vue3";
+import {useForm, router, Link, Head} from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import {ref} from 'vue';
 const $q = useQuasar();

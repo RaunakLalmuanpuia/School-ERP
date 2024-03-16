@@ -63,3 +63,7 @@ Route::get('usersRole', [RoleController::class, 'users'])->name('usersRole');
 Route::post('users/{users}', [RoleController::class, 'updateUserRole'])->name('updateUserRole');//Assign user role
 
 Route::get('routine', [ClassesController::class, 'generate'])->name('routine');
+
+
+Route::get('showSubjects', [TeacherController::class, 'showSubjects'])->name('teacher.showSubjects');
+Route::get('viewSubject/{subject}', [TeacherController::class, 'viewSubject'])->name('teacher.viewSubject');

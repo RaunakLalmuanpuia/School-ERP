@@ -1,0 +1,359 @@
+1.
+-- Users table
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL, -- Use appropriate hashing algorithm
+    role ENUM('teacher', 'student') NOT NULL
+);
+
+-- Subjects table
+CREATE TABLE subjects (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    subject_name VARCHAR(100) NOT NULL,
+    teacher_id INT NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id)
+);
+
+-- Exams table
+CREATE TABLE exams (
+    exam_id INT PRIMARY KEY AUTO_INCREMENT,
+    exam_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    online BOOLEAN NOT NULL DEFAULT FALSE, -- New column for online exams
+    exam_link VARCHAR(255), -- Link to online exam platform
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Assignments table
+CREATE TABLE assignments (
+    assignment_id INT PRIMARY KEY AUTO_INCREMENT,
+    assignment_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Quizzes table
+CREATE TABLE quizzes (
+    quiz_id INT PRIMARY KEY AUTO_INCREMENT,
+    quiz_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    online BOOLEAN NOT NULL DEFAULT FALSE, -- New column for online quizzes
+    quiz_link VARCHAR(255), -- Link to online quiz platform
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Student submissions table
+CREATE TABLE student_submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    assignment_id INT, -- Nullable for quizzes
+    quiz_id INT, -- Nullable for assignments
+    submission_text TEXT, -- For text submissions
+    submission_file_path VARCHAR(255), -- For file submissions
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id),
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(quiz_id)
+);
+
+-- Student exam submissions table
+CREATE TABLE student_exam_submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    submission_file_path VARCHAR(255), -- For file submissions
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id)
+);
+
+-- Additional tables for roles, permissions, etc., if needed
+
+
+2. 
+
+
+-- Users table
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL, -- Use appropriate hashing algorithm
+    role ENUM('teacher', 'student') NOT NULL
+);
+
+-- Subjects table
+CREATE TABLE subjects (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    subject_name VARCHAR(100) NOT NULL,
+    teacher_id INT NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id)
+);
+
+-- Exams table
+CREATE TABLE exams (
+    exam_id INT PRIMARY KEY AUTO_INCREMENT,
+    exam_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Assignments table
+CREATE TABLE assignments (
+    assignment_id INT PRIMARY KEY AUTO_INCREMENT,
+    assignment_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Quizzes table
+CREATE TABLE quizzes (
+    quiz_id INT PRIMARY KEY AUTO_INCREMENT,
+    quiz_name VARCHAR(100) NOT NULL,
+    subject_id INT NOT NULL,
+    date_time DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Student submissions table
+CREATE TABLE student_submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    assignment_id INT, -- Nullable for quizzes
+    quiz_id INT, -- Nullable for assignments
+    submission_text TEXT, -- For text submissions
+    submission_file_path VARCHAR(255), -- For file submissions
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id),
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(quiz_id)
+);
+
+-- Student exam submissions table
+CREATE TABLE student_exam_submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    exam_id INT NOT NULL,
+    submission_file_path VARCHAR(255), -- For file submissions
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id)
+);
+
+-- Additional tables for roles, permissions, etc., if needed
+
+-- Online Submissions
+CREATE TABLE submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    assignment_id INT,
+    quiz_id INT,
+    submission_type ENUM('file', 'text') NOT NULL,
+    submission_text TEXT, -- For text submissions
+    submission_file_path VARCHAR(255), -- For file submissions
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id),
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(quiz_id)
+);
+
+-- User Activities
+CREATE TABLE user_activities (
+    activity_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    activity_type ENUM('login', 'logout', 'interaction') NOT NULL,
+    activity_details TEXT,
+    activity_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_ip VARCHAR(45), -- IPv6 addresses are 45 characters long
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Online Exams (If applicable)
+CREATE TABLE online_exams (
+    exam_id INT PRIMARY KEY AUTO_INCREMENT,
+    exam_name VARCHAR(255) NOT NULL,
+    subject_id INT NOT NULL,
+    duration_minutes INT,
+    scheduled_datetime DATETIME,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Online Exam Submissions (If applicable)
+CREATE TABLE exam_submissions (
+    submission_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    exam_id INT,
+    submission_file_path VARCHAR(255),
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (exam_id) REFERENCES online_exams(exam_id)
+);
+
+-- Additional tables for user roles, permissions, etc., if needed
+
+
+3. 
+-- Users Table
+CREATE TABLE users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('student', 'teacher') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Subjects Table
+CREATE TABLE subjects (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    subject_name VARCHAR(255) NOT NULL,
+    teacher_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id)
+);
+
+-- Exams Table
+CREATE TABLE exams (
+    exam_id INT PRIMARY KEY AUTO_INCREMENT,
+    exam_name VARCHAR(255) NOT NULL,
+    subject_id INT NOT NULL,
+    duration_minutes INT, -- Duration of the exam
+    scheduled_datetime DATETIME, -- Scheduled date and time of the exam
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Assignments Table
+CREATE TABLE assignments (
+    assignment_id INT PRIMARY KEY AUTO_INCREMENT,
+    assignment_name VARCHAR(255) NOT NULL,
+    subject_id INT NOT NULL,
+    due_date DATE, -- Due date of the assignment
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Quizzes Table
+CREATE TABLE quizzes (
+    quiz_id INT PRIMARY KEY AUTO_INCREMENT,
+    quiz_name VARCHAR(255) NOT NULL,
+    subject_id INT NOT NULL,
+    duration_minutes INT, -- Duration of the quiz
+    scheduled_datetime DATETIME, -- Scheduled date and time of the quiz
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+-- Student Exams Table (Intermediate Table for Many-to-Many Relationship)
+CREATE TABLE student_exams (
+    student_id INT,
+    exam_id INT,
+    attempted_datetime DATETIME, -- Date and time of exam attempt
+    marks_obtained INT,
+    completed BOOLEAN DEFAULT false, -- Indicates whether the exam was completed within the time limit
+    PRIMARY KEY (student_id, exam_id),
+    FOREIGN KEY (student_id) REFERENCES users(user_id),
+    FOREIGN KEY (exam_id) REFERENCES exams(exam_id)
+);
+
+-- Student Assignments Table (Intermediate Table for Many-to-Many Relationship)
+CREATE TABLE student_assignments (
+    student_id INT,
+    assignment_id INT,
+    submitted_date DATE, -- Date of assignment submission
+    marks_obtained INT,
+    PRIMARY KEY (student_id, assignment_id),
+    FOREIGN KEY (student_id) REFERENCES users(user_id),
+    FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id)
+);
+
+-- Student Quizzes Table (Intermediate Table for Many-to-Many Relationship)
+CREATE TABLE student_quizzes (
+    student_id INT,
+    quiz_id INT,
+    attempted_datetime DATETIME, -- Date and time of quiz attempt
+    marks_obtained INT,
+    completed BOOLEAN DEFAULT false, -- Indicates whether the quiz was completed within the time limit
+    PRIMARY KEY (student_id, quiz_id),
+    FOREIGN KEY (student_id) REFERENCES users(user_id),
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(quiz_id)
+);
+
+
+4
+. CREATE TABLE users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    role VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE subjects (
+    subject_id INT PRIMARY KEY,
+    subject_name VARCHAR(255),
+    teacher_id INT,
+    start_date DATE,
+    end_date DATE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (teacher_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE exams (
+    exam_id INT PRIMARY KEY,
+    exam_name VARCHAR(255),
+    subject_id INT,
+    date DATE,
+    start_time TIME,
+    end_time TIME,
+    duration_minutes INT,
+    max_marks INT,
+    instructions TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+CREATE TABLE assignments (
+    assignment_id INT PRIMARY KEY,
+    assignment_name VARCHAR(255),
+    subject_id INT,
+    deadline DATE,
+    description TEXT,
+    attached_file VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);
+
+CREATE TABLE quizzes (
+    quiz_id INT PRIMARY KEY,
+    quiz_name VARCHAR(255),
+    subject_id INT,
+    duration_minutes INT,
+    questions_count INT,
+    passing_marks INT,
+    instructions TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
+);

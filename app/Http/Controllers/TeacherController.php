@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subjects;
 use App\Models\Teacher;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -120,4 +122,35 @@ class TeacherController extends Controller
     {
         //
     }
+    public function showSubjects(){
+        // $user = auth()->user();
+        // Retrieve the teacher with its relations where user_id matches the authenticated user's ID
+        
+        $teacher = Teacher::where('user_id', auth()->id())->with('subjects.class')->first();
+     
+        $subjects = $teacher->subjects()->with('class')->paginate();
+        
+        // dd($subjects);
+        return Inertia::render('Teacher/Subjects',[
+            // 'teacher' => $teacher,
+            'subjects' => $subjects
+        ]);
+    }
+    public function viewSubject($id){
+        $subject = Subjects::findOrFail($id);
+        // dd($subject);
+        // Get all the student taking the subject
+       
+        $teacher = Teacher::where('user_id', auth()->id())->with(['subjects.class', 'user'])->first();
+        $subjects = $teacher->subjects()->with('class')->paginate();
+
+        $students = Student::where('class_id', $subject->class_id)->with('user')->paginate();
+        // dd($students);
+        return Inertia::render('Teacher/Subject/Show',[
+            // 'teacher' => $teacher,
+            'students' => $students,
+            'subjects' => $subjects
+        ]);
+    }
+
 }

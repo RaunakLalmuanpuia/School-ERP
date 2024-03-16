@@ -15,11 +15,11 @@ class Classes extends Model
     protected $guarded = [];
 
     public function students(){
-        return $this->hasMany(Student::class, 'user_id');
+        return $this->hasMany(Student::class);
     }
 
     public function subjects(){
-        return $this->hasMany(Subjects::class, 'class_id');
+        return $this->hasMany(Subjects::class);
     }
 
 }

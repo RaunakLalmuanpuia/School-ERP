@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('assingments', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('grade_id')->nullable();
-            $table->unsignedBigInteger('teacher_id')->nullable();
+            $table->unsignedBigInteger('subjects_id')->nullable();
 
             $table->string('name')->nullable();
-            $table->string('subject_code')->nullable();
+            $table->string('description')->nullable();
+            $table->string('due_date')->nullable();
+            $table->text('file')->nullable();
             $table->date('acadamic_year')->nullable();
 
-            $table->foreign('grade_id')->references('id')->on('grades');
-            $table->foreign('teacher_id')->references('id')->on('teachers');
+            $table->foreign('subjects_id')->references('id')->on('subjects');
+         
+
 
             $table->string('param1')->nullable();
             $table->string('param2')->nullable();
@@ -41,9 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('assingments');
     }
 };
-
-
-

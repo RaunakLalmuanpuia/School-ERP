@@ -39,8 +39,8 @@
                                     }}</span>
                                     <span>{{ student.user.email }}</span>
                                     <span>{{ student.address }}</span>
-                                    <span>{{ student.class.description }}</span>
-                                    <span v-for="subject in student.class.subject">
+                                    <span>{{ student.grade.description }}</span>
+                                    <span v-for="subject in student.grade.subject">
                                         {{ subject.name }}a
                                     </span>
                                     <!-- <span class="font-bold">{{
@@ -189,12 +189,13 @@ import QuasarLayout from "@/Layouts/QuasarLayout.vue";
 import {useForm, router, Link, Head} from "@inertiajs/vue3";
 import { useQuasar } from "quasar";
 import {ref} from 'vue';
+
 const $q = useQuasar();
 const prompt = ref(false);
 
 const props = defineProps({
     student: Object,
-    classes: Object,
+    grade: Object,
 });
 const formData = useForm({
     class_id: null,
@@ -215,11 +216,13 @@ const formData = useForm({
 const creatPrompt = () => {
     prompt.value = true;
 };
-// Map teacher objects to dropdown options
-const classesOptions = props.classes.map(classes => ({
-  label: classes.description, 
-  value: classes.id,
+
+// Map grades objects to dropdown options
+const classesOptions = props.grade.map(grade => ({
+  label: grade.description, 
+  value: grade.id,
 }));
+
 const onSubmit = () => {
         formData.post(route("student.store"));
         $q.notify({

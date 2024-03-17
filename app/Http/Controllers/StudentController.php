@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classes;
+use App\Models\Grade;
 use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
@@ -17,11 +17,12 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $classes = Classes::with(['subjects.teacher'])->get();
-        $student = Student::with(['user','class'])->paginate();
+        $grade = Grade::with(['subjects.teacher'])->get();
+        $student = Student::with(['user','grade'])->paginate();
+       
         return Inertia::render('Student/Index',[
             'student' => $student,
-            'classes' => $classes
+            'grade' => $grade
         ]);
     }
 
@@ -38,7 +39,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);s
+        // dd($request);
         
         $vaidated_data = $request->validate([
             'name' => 'required|string|max:255',
@@ -61,34 +62,46 @@ class StudentController extends Controller
             $filepath_photo = str_replace('public/', '', $filepath_photo); // Remove 'public/' from the path
            
         }
-        // first create a user
-        $user = new User([
-            'name' => $vaidated_data['name'],
-            'email' => $vaidated_data['email'],
-            'password' =>Hash::make($vaidated_data['password']),
-            
-        ]);
-        $user->save();
-        $user->syncRoles('student');
-        //get the new created user
-        $userId = User::where('email', $vaidated_data['email'])->first();
-        $class = Classes::where('id', $request->class_id['value'])->first();
-        // add the teacher details in teacher table
-        $student = new Student([
-            'user_id' => $userId->id,
-            'admission_no' => $vaidated_data['admission_no'],
-            'father_name' => $vaidated_data['father_name'],
-            'mother_name' => $vaidated_data['mother_name'],
-            'gender' => $vaidated_data['gender'],
-            'date_of_birth' => $vaidated_data['date_of_birth'],
-            'acadamic_year' => $vaidated_data['acadamic_year'],
-            'address' => $vaidated_data['address'],
-            'phone_no' =>$vaidated_data['phone_no'],
-            'photo' => $filepath_photo,
-            'class_id' =>$class->id,
-        ]);
-        $student->save();
-        return redirect()->route('student.index')->with('message', 'Student Added Successfully!');
+
+        // dd(User::where('email', $vaidated_data['email'])->exists());
+        // Check if a user with the provided email already exists
+        if (User::where('email', $vaidated_data['email'])->exists()) {
+            // Handle the case when the user already exists, perhaps return an error response
+            return redirect()->route('student.index')->with('message', 'Email Already Exist!');
+        }
+        else{
+             // first create a user
+            $user = new User([
+                'name' => $vaidated_data['name'],
+                'email' => $vaidated_data['email'],
+                'password' =>Hash::make($vaidated_data['password']),
+                
+            ]);
+            $user->save();
+            $user->syncRoles('student');
+            //get the new created user
+            $userId = User::where('email', $vaidated_data['email'])->first();
+            $grade = Grade::where('id', $request->class_id['value'])->first();
+            // add the teacher details in teacher table
+            $student = new Student([
+                'user_id' => $userId->id,
+                'admission_no' => $vaidated_data['admission_no'],
+                'father_name' => $vaidated_data['father_name'],
+                'mother_name' => $vaidated_data['mother_name'],
+                'gender' => $vaidated_data['gender'],
+                'date_of_birth' => $vaidated_data['date_of_birth'],
+                'acadamic_year' => $vaidated_data['acadamic_year'],
+                'address' => $vaidated_data['address'],
+                'phone_no' =>$vaidated_data['phone_no'],
+                'photo' => $filepath_photo,
+                'grade_id' =>$grade->id,
+            ]);
+            info($student->save());
+            $student->save();
+            return redirect()->route('student.index')->with('message', 'Student Added Successfully!');
+        }
+
+       
     }
 
     /**
@@ -99,10 +112,10 @@ class StudentController extends Controller
     
         // dd($student);
         
-        $student->load('class', 'user'); // load the relation of student
+        $student->load('grade', 'user'); // load the relation of student
         // $user_detail = User::where('id', $student->user_id)->first();
         // $student_class = Classes::where('id', $student->class_id)->first();
-        $student_subjects = Subjects::where('class_id', $student->class_id)->with('teacher.user')->get(); //get teacher of subject also along with the relation of the teacher with user
+        $student_subjects = Subjects::where('grade_id', $student->grade_id)->with('teacher.user')->get(); //get teacher of subject also along with the relation of the teacher with user
         // dd($student_subjects[0]->teacher->user->name); // teacher name;
         // dd($student_detail->class->name);
         return Inertia::render('Student/Show',[

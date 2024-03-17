@@ -11,12 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classes', function (Blueprint $table) {
+        Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('subjects_id')->nullable();
 
             $table->string('name')->nullable();
             $table->string('description')->nullable();
+            $table->string('duration')->nullable();
+            $table->string('scheduled_date')->nullable();
+            $table->text('file')->nullable();
             $table->date('acadamic_year')->nullable();
+
+            $table->foreign('subjects_id')->references('id')->on('subjects');
+         
+
 
             $table->string('param1')->nullable();
             $table->string('param2')->nullable();
@@ -25,6 +34,8 @@ return new class extends Migration
             $table->string('param5')->nullable();
 
             $table->softDeletes();
+
+
             $table->timestamps();
         });
     }
@@ -34,7 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classes');
+        Schema::dropIfExists('quizzes');
     }
 };
-

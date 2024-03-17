@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('class_id')->nullable();
+            $table->unsignedBigInteger('grade_id')->nullable();
             
             $table->string('admission_no')->nullable();
             $table->string('father_name')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             
 
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('class_id')->references('id')->on('classes');
+            $table->foreign('grade_id')->references('id')->on('grades');
 
             $table->string('param1')->nullable();
             $table->string('param2')->nullable();
@@ -39,7 +39,6 @@ return new class extends Migration
             $table->string('param5')->nullable();
 
             $table->softDeletes();
-
 
             $table->timestamps();
         });

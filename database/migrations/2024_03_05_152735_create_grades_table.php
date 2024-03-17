@@ -11,18 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('grades', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('grade_id')->nullable();
-            $table->unsignedBigInteger('teacher_id')->nullable();
-
             $table->string('name')->nullable();
-            $table->string('subject_code')->nullable();
+            $table->string('description')->nullable();
             $table->date('acadamic_year')->nullable();
-
-            $table->foreign('grade_id')->references('id')->on('grades');
-            $table->foreign('teacher_id')->references('id')->on('teachers');
 
             $table->string('param1')->nullable();
             $table->string('param2')->nullable();
@@ -31,7 +25,6 @@ return new class extends Migration
             $table->string('param5')->nullable();
 
             $table->softDeletes();
-
             $table->timestamps();
         });
     }
@@ -41,9 +34,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('grades');
     }
 };
-
-
 

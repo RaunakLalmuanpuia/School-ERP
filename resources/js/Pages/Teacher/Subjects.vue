@@ -31,7 +31,7 @@
                                         subjects.name
                                     }}</span>
                                     <span>{{ subjects.subject_code}}</span>
-                                    <span>{{ subjects.class.description}}</span>
+                                    <span>{{ subjects.grade.description}}</span>
                                 </div>
                             </Link>
                         </div>

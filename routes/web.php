@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ClassesController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\StudentController;
@@ -40,7 +41,7 @@ Route::middleware([
 });
 
 Route::group(['middleware'=>['auth']], function(){
-    Route::resource('/class', ClassesController::class);
+    Route::resource('/grade', GradeController::class);
 });
 Route::group(['middleware'=>['auth']], function(){
     Route::resource('/teacher', TeacherController::class);
@@ -62,8 +63,8 @@ Route::delete('role/{role}', [RoleController::class, 'destroyRole'])->name('dest
 Route::get('usersRole', [RoleController::class, 'users'])->name('usersRole');
 Route::post('users/{users}', [RoleController::class, 'updateUserRole'])->name('updateUserRole');//Assign user role
 
-Route::get('routine', [ClassesController::class, 'generate'])->name('routine');
+Route::get('routine', [GradeController::class, 'generate'])->name('routine');
 
-
+//Teacher
 Route::get('showSubjects', [TeacherController::class, 'showSubjects'])->name('teacher.showSubjects');
 Route::get('viewSubject/{subject}', [TeacherController::class, 'viewSubject'])->name('teacher.viewSubject');

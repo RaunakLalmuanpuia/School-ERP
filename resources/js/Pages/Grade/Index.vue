@@ -21,20 +21,20 @@
                     class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
                 >
                     <div
-                        v-for="classe in classes.data"
-                        :key="classe.id"
+                        v-for="grades in grades.data"
+                        :key="grades.id"
                     >
                         <div class="p-4 mb-4 border border-gray-300 rounded-md">
                             <Link
-                                v-if="classe.id"
-                                :href="route('class.show', classe.id)"
+                                v-if="grades.id"
+                                :href="route('grade.show', grades.id)"
                             >
                                 <div class="flex flex-col items-start gap-2">
                                     <span class="font-bold">{{
-                                        classe.name
+                                        grades.name
                                     }}</span>
-                                    <span>{{ classe.description }}</span>
-                                    <span>{{ classe.acadamic_year }}</span>
+                                    <span>{{ grades.description }}</span>
+                                    <span>{{ grades.acadamic_year }}</span>
                                     <!-- <span class="font-bold">{{
                                         classe.employer_status
                                     }}</span>
@@ -49,7 +49,7 @@
             <div class="flex justify-center mt-4">
                 <div class="flex gap-1">
                     <Link
-                        v-for="(link, index) in classes.links"
+                        v-for="(link, index) in grades.links"
                         :key="index"
                         class="px-4 py-2 rounded-md"
                         :href="link.url || ''"
@@ -92,7 +92,7 @@ const $q = useQuasar();
 const prompt = ref(false);
 
 const props = defineProps({
-    classes: Object,
+    grades: Object,
 });
 const form = useForm({
     name : "",
@@ -104,7 +104,7 @@ const creatPrompt = () => {
 };
 
 const onSubmit = () => {
-        form.post(route("class.store"));
+        form.post(route("grade.store"));
         $q.notify({
             message: "Class succesfully Created",
             color: "purple",

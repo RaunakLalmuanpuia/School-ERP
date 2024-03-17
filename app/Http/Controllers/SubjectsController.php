@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classes;
+
+use App\Models\Grade;
 use App\Models\Subjects;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
@@ -15,14 +16,14 @@ class SubjectsController extends Controller
     public function index()
     {
          // $classes = Classes::with(['students', 'subjects'])->paginate();
-         $subjects = Subjects::with(['class', 'teacher.user'])->paginate();
-         $classes = Classes::all();
+         $subjects = Subjects::with(['grade', 'teacher.user'])->paginate();
+         $grades = Grade::all();
          $teacher = Teacher::with(['user'])->get();
          // Load the class and teacher associated with the subject
         // $subject = Subjects::load(['class', 'teacher']);
          return Inertia::render('Subjects/Index',[
              'subjects' => $subjects,
-             'classes' => $classes,
+             'classes' => $grades,
              'teacher' => $teacher
          ]);
     }
@@ -43,10 +44,11 @@ class SubjectsController extends Controller
         // dd($request);
         // dd($request->class_id['value']);
 
-        $class = Classes::where('id', $request->class_id['value'])->first();
+        $grade = Grade::where('id', $request->class_id['value'])->first();
+        // dd($grade->id);
         $teacher = Teacher::where('id', $request->teacher_id['value'])->first();
         $subject = new Subjects([
-            'class_id' => $class->id,
+            'grade_id' => $grade->id,
             'teacher_id' => $teacher->id,
             'name' => $request->name,
             'subject_code' => $request->subject_code,

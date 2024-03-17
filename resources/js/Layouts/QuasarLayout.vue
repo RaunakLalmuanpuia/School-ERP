@@ -99,7 +99,7 @@
                     </q-item>
                 </Link>
                 <q-separator spaced />
-                <Link :href="route('class.index')">
+                <Link :href="route('grade.index')">
                 <q-item
                     clickable
                     v-ripple
@@ -174,7 +174,7 @@
                     </q-item>
                 </Link>
                 <q-separator spaced />
-                <Link :href="route('class.index')">
+                <Link :href="route('grade.index')">
                 <q-item
                     clickable
                     v-ripple

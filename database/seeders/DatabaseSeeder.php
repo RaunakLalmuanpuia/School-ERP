@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,5 +20,19 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $this->call([
+            RoleSeeder::class,
+        ]);
+
+        $user = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@mail.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        // Assign the admin role
+        $adminRole = Role::where('name', 'admin')->first();
+
+        $user->assignRole($adminRole);
     }
 }

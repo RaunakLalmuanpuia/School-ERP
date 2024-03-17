@@ -6,9 +6,11 @@ use App\GeneticAlgorithm\TimetableGenerator;
 use App\GeneticAlgorithm\GeneticAlgorithm;
 
 use App\Models\Classes;
+use App\Models\Grade;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-class ClassesController extends Controller
+
+class GradeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +18,10 @@ class ClassesController extends Controller
     public function index()
     {
 
-        $classes = Classes::with(['students', 'subjects'])->paginate();
-        // $classes = Classes::paginate(); 
-        return Inertia::render('Class/Index',[
-            'classes' => $classes,
+          $grades= Grade::with(['students', 'subjects'])->paginate();
+        //   $classes = Classes::paginate();
+          return Inertia::render('Grade/Index',[
+            'grades' => $grades,
         ]);
     }
 
@@ -37,20 +39,20 @@ class ClassesController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        Classes :: create(
+        Grade :: create(
             $request->validate([
-                'name' => 'required|integer|min:1|max:12',
+                'name' => 'required|min:1|max:12',
                 'description' => 'required',
                 'acadamic_year' => 'required'
             ])
         );
-        return redirect()->route('class.index')->with('success', 'Class Sucessfully Added');
+        return redirect()->route('grade.index')->with('success', 'Class Sucessfully Added');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Classes $classes)
+    public function show(Grade $grade)
     {
         //
     }
@@ -58,7 +60,7 @@ class ClassesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Classes $classes)
+    public function edit(Grade $grade)
     {
         //
     }
@@ -66,7 +68,7 @@ class ClassesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Classes $classes)
+    public function update(Request $request, Grade $grade)
     {
         //
     }
@@ -74,7 +76,7 @@ class ClassesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classes $classes)
+    public function destroy(Grade $grade)
     {
         //
     }

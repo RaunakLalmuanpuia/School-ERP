@@ -15,7 +15,7 @@
                             
                             <p class="text-gray-600 text-sm mb-2">Email: {{ student_detail.user.name }}</p>
                             <p class="text-gray-600 text-sm mb-2">Email: {{ student_detail.user.email }}</p>
-                            <p class="text-gray-600 text-sm mb-2">Class: {{ student_detail.class.description }}</p>
+                            <p class="text-gray-600 text-sm mb-2">Class: {{ student_detail.grade.description }}</p>
                             <p class="text-gray-600 text-sm">Admission Number: {{ student_detail.admission_no }}</p>
                         </div>
                         

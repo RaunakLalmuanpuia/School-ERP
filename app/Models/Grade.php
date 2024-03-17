@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Classes extends Model
+class Grade extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,11 +15,13 @@ class Classes extends Model
     // Empty means all modules are mass assingnable
     protected $guarded = [];
 
-    public function students(){
+    public function students():HasMany
+    {
         return $this->hasMany(Student::class);
     }
 
-    public function subjects(){
+    public function subjects():HasMany
+    {
         return $this->hasMany(Subjects::class);
     }
 

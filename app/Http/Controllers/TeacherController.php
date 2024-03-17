@@ -126,9 +126,9 @@ class TeacherController extends Controller
         // $user = auth()->user();
         // Retrieve the teacher with its relations where user_id matches the authenticated user's ID
         
-        $teacher = Teacher::where('user_id', auth()->id())->with('subjects.class')->first();
+        $teacher = Teacher::where('user_id', auth()->id())->with('subjects.grade')->first();
      
-        $subjects = $teacher->subjects()->with('class')->paginate();
+        $subjects = $teacher->subjects()->with('grade')->paginate();
         
         // dd($subjects);
         return Inertia::render('Teacher/Subjects',[
@@ -138,18 +138,18 @@ class TeacherController extends Controller
     }
     public function viewSubject($id){
         $subject = Subjects::findOrFail($id);
-        // dd($subject);
-        // Get all the student taking the subject
-       
-        $teacher = Teacher::where('user_id', auth()->id())->with(['subjects.class', 'user'])->first();
-        $subjects = $teacher->subjects()->with('class')->paginate();
 
-        $students = Student::where('class_id', $subject->class_id)->with('user')->paginate();
+        $subject_material = Subjects::with('quiz','asssingment','exam')->findOrFail($id);
+        // $subject_material = Subjects::with('quiz')->findOrFail($id);
+        // dd($subject_material);
+        // Get all the student taking the subject
+        $students = Student::where('grade_id', $subject->grade_id)->with('user')->paginate();
         // dd($students);
         return Inertia::render('Teacher/Subject/Show',[
             // 'teacher' => $teacher,
             'students' => $students,
-            'subjects' => $subjects
+            'subject_material' => $subject_material
+            
         ]);
     }
 

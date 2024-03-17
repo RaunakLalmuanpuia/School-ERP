@@ -34,7 +34,7 @@
                                         subject.name
                                     }}</span>
                                     <span>{{ subject.subject_code}}</span>
-                                    <span>{{ subject.class.description }}</span>
+                                    <span>{{ subject.grade.description }}</span>
                                     <span>{{ subject.teacher.user.name }}</span>
                                     <span>{{ subject.teacher.user.email }}</span>
                                     
@@ -110,7 +110,7 @@
                 <q-btn flat label="Confirm" v-close-popup  @click="onSubmit()"/>
                 </q-card-actions>
             </q-card>
-            </q-dialog>
+        </q-dialog>
     </QuasarLayout>
 </template>
 
